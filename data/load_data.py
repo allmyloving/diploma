@@ -1,6 +1,8 @@
-import requests
 import sqlite3
-import constants
+
+import requests
+
+from data import constants
 
 
 def get_token():
