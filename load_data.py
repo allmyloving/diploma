@@ -1,22 +1,14 @@
 import requests
-
-HOST = 'api.twitter.com'
-AUTH_PATH = '/oauth2/token'
-SEARCH_PATH = '/1.1/search/tweets.json'
-ACCESS_TOKEN_PARAM = 'access_token'
-GRANT_TYPE_PARAM = 'grant_type'
-CLIENT_CREDENTIALS = 'client_credentials'
-
-CONSUMER_KEY = 'I7IzOl39eH1KqXaUGzw1TlfeU'
-CONSUMER_SECRET = 'e1I2lEbyDVnpJe8JOawYx78DIh9WdhU6SeFHtMVvYbjKH8AA62'
+import sqlite3
+import constants
 
 
 def get_token():
     token_params = {
-        GRANT_TYPE_PARAM: CLIENT_CREDENTIALS
+        constants.GRANT_TYPE_PARAM: constants.CLIENT_CREDENTIALS
     }
-    url = 'https://' + HOST + AUTH_PATH
-    response = requests.post(url, token_params, auth=(CONSUMER_KEY, CONSUMER_SECRET))
+    url = 'https://' + constants.HOST + constants.AUTH_PATH
+    response = requests.post(url, token_params, auth=(constants.CONSUMER_KEY, constants.CONSUMER_SECRET))
     if response.status_code != 200:
         print('Request unsuccessful, response code: %d' % response.status_code)
     else:
@@ -28,17 +20,37 @@ def search(token, q, lang='en'):
         'q': q,
         'lang': lang
     }
-    url = 'https://' + HOST + SEARCH_PATH
+    url = 'https://' + constants.HOST + constants.SEARCH_PATH
     headers = {
-        'Authorization': 'Bearer '.join(token),
+        'Authorization': 'Bearer ' + token,
         'Accept-Encoding': 'gzip'
     }
     response = requests.get(url, search_params, headers=headers)
-    if response.status_code != 200:
-        print('Request unsuccessful, response code: %d' % response.status_code)
-    return response.json()
+    return response.status_code, response.json()
+
+
+def transform(json):
+    tweets = list(json.get('statuses'))
+    return [t.get('text') for t in tweets]
+
+
+def store_tweets(tweets, lang):
+    conn = sqlite3.connect('test_set.db')
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS tweet
+             (data text unique, lang text)''')
+    for tweet in tweets:
+        cursor.execute("select * from tweet where data=?", (tweet,))
+        if not cursor.fetchone():
+            cursor.execute("insert into tweet values (?, ?)", (tweet, lang))
+        conn.commit()
+    conn.close()
 
 
 token = get_token()
-results = search(token, 'nasa')
-print(results)
+lang = 'en'
+status_code, json = search(token, 'nasa', lang)
+print(json)
+if status_code == 200:
+    tweets_text = transform(json)
+    store_tweets(tweets_text, lang)
