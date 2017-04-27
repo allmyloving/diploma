@@ -1,4 +1,3 @@
-
 HOST = 'api.twitter.com'
 AUTH_PATH = '/oauth2/token'
 SEARCH_PATH = '/1.1/search/tweets.json'
@@ -8,3 +7,6 @@ CLIENT_CREDENTIALS = 'client_credentials'
 
 CONSUMER_KEY = 'I7IzOl39eH1KqXaUGzw1TlfeU'
 CONSUMER_SECRET = 'e1I2lEbyDVnpJe8JOawYx78DIh9WdhU6SeFHtMVvYbjKH8AA62'
+
+WIKIPEDIA_TEXT_FOLDER = 'wiki_paragraphs'
+MINIMUM_PARAGRAPH_LENGTH = 100
