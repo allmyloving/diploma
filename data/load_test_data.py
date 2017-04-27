@@ -1,7 +1,5 @@
 import sqlite3
-
 import requests
-
 from data import constants
 
 
