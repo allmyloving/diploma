@@ -18,7 +18,8 @@ def get_token():
 def search(token, q, lang='en'):
     search_params = {
         'q': q,
-        'lang': lang
+        'lang': lang,
+        'count': '100'
     }
     url = 'https://' + constants.HOST + constants.SEARCH_PATH
     headers = {
@@ -35,22 +36,20 @@ def transform(json):
 
 
 def store_tweets(tweets, lang):
-    conn = sqlite3.connect('test_set.db')
+    conn = sqlite3.connect(constants.DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS tweet
+    cursor.execute('''CREATE TABLE IF NOT EXISTS test_set
              (data text unique, lang text)''')
     for tweet in tweets:
-        cursor.execute("select * from tweet where data=?", (tweet,))
+        cursor.execute("select * from test_set where data=?", (tweet,))
         if not cursor.fetchone():
-            cursor.execute("insert into tweet values (?, ?)", (tweet, lang))
+            cursor.execute("insert into test_set values (?, ?)", (tweet, lang))
         conn.commit()
     conn.close()
-
 
 token = get_token()
 lang = 'en'
 status_code, json = search(token, 'nasa', lang)
-print(json)
 if status_code == 200:
     tweets_text = transform(json)
     store_tweets(tweets_text, lang)
