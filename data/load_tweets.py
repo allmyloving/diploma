@@ -1,6 +1,6 @@
-import sqlite3
 import requests
 from data import constants
+from data import utils
 
 
 def get_token():
@@ -15,11 +15,15 @@ def get_token():
         return response.json().get('access_token')
 
 
-def search(token, q, lang='en'):
+def search(token, q, lang, since='2017-01-01', until=utils.tomorrow(), count='100', max_id=''):
     search_params = {
         'q': q,
         'lang': lang,
-        'count': '100'
+        'count': count,
+        'max_id': max_id,
+        'since': since,
+        'until': until,
+        'include_entities': False
     }
     url = 'https://' + constants.HOST + constants.SEARCH_PATH
     headers = {
@@ -32,24 +36,4 @@ def search(token, q, lang='en'):
 
 def transform(json):
     tweets = list(json.get('statuses'))
-    return [t.get('text') for t in tweets]
-
-
-def store_tweets(tweets, lang):
-    conn = sqlite3.connect(constants.DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS test_set
-             (data text unique, lang text)''')
-    for tweet in tweets:
-        cursor.execute("select * from test_set where data=?", (tweet,))
-        if not cursor.fetchone():
-            cursor.execute("insert into test_set values (?, ?)", (tweet, lang))
-        conn.commit()
-    conn.close()
-
-token = get_token()
-lang = 'en'
-status_code, json = search(token, 'nasa', lang)
-if status_code == 200:
-    tweets_text = transform(json)
-    store_tweets(tweets_text, lang)
+    return [t.get('text') for t in tweets], min([t.get('id') for t in tweets])
