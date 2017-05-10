@@ -1,23 +1,23 @@
-from data import load_tweets
+from data import twitter
 from data import utils
 import re
 
 
 def get_data(amount, lang, since='2017-01-01', until=utils.tomorrow()):
-    token = load_tweets.get_token()
+    token = twitter.get_token()
     all_messages = []
     min_id = ''
     count = amount if amount < 100 else 100
 
     while len(all_messages) < amount:
         json = get_messages(lang, token, count, since, until, min_id)
-        messages, min_id = load_tweets.transform(json)
+        messages, min_id = twitter.transform(json)
         all_messages.extend(messages)
     return all_messages
 
 
 def get_messages(lang, token, count, since, until, max_id):
-    status_code, json = load_tweets.search(token, 'a', lang, since, until, count, max_id=max_id)
+    status_code, json = twitter.search(token, 'a', lang, since, until, count, max_id=max_id)
     if status_code != 200:
         raise Exception("Twitter is unavailable")
     return json

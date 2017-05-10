@@ -20,7 +20,7 @@ def get_dom_tree(page):
     return ElementTree(lxml.html.document_fromstring(html_content))
 
 
-def get(lang):
+def download_wiki(lang):
     tree = get_dom_tree(pages[lang])
     conn = sqlite3.connect(constants.DB_NAME)
     conn.cursor().execute('''CREATE TABLE IF NOT EXISTS train_set
