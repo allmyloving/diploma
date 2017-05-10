@@ -1,5 +1,6 @@
 from data import load_tweets
 from data import utils
+import re
 
 
 def get_data(amount, lang, since='2017-01-01', until=utils.tomorrow()):
@@ -29,8 +30,9 @@ def load_test_data(amount, lang):
 
 def load_train_data(amount, lang):
     messages = get_data(amount, lang, until=utils.minus_days(utils.today(), 3))
+    messages = remove_redundant_symbols(messages)
     utils.store_train_data(messages, lang)
 
 
-load_test_data(200, 'ru')
-load_train_data(200, 'ru')
+def remove_redundant_symbols(messages):
+    return [re.sub(r'[http|@()]\S*', '', m) for m in messages]
