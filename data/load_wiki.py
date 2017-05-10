@@ -20,24 +20,14 @@ def get_dom_tree(page):
     return ElementTree(lxml.html.document_fromstring(html_content))
 
 
-def store(conn, text, lang):
-    cursor = conn.cursor()
-    cursor.execute("select * from train_set where data=?", (text,))
-    if not cursor.fetchone():
-        cursor.execute("insert into train_set values (?, ?)", (text, lang))
-    conn.commit()
+def get(lang):
+    tree = get_dom_tree(pages[lang])
+    conn = sqlite3.connect(constants.DB_NAME)
+    conn.cursor().execute('''CREATE TABLE IF NOT EXISTS train_set
+             (data text unique, lang text)''')
 
-
-def store_all():
-    for lang, page in pages.items():
-        tree = get_dom_tree(page)
-        conn = sqlite3.connect(constants.DB_NAME)
-        conn.cursor().execute('''CREATE TABLE IF NOT EXISTS train_set
-                 (data text unique, lang text)''')
-
-        for p in tree.findall('//p'):
-            content = p.text_content()
-            [store(conn, s, lang) for s in content.split('.')]
-
-
-store_all()
+    messages = []
+    for p in tree.findall('//p'):
+        content = p.text_content()
+        [messages.extend(m) for m in content.split('.')]
+    return messages

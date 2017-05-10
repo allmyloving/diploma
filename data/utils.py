@@ -2,15 +2,6 @@ import sqlite3
 from data import constants
 from datetime import date
 from datetime import timedelta
-import os
-
-
-def count_symbols(lang):
-    total_len = 0
-    text_lang_folder = os.path.join(constants.WIKIPEDIA_TEXT_FOLDER, lang)
-    for file in os.listdir(text_lang_folder):
-        total_len += len(open(os.path.join(text_lang_folder, file), encoding='utf-8').read())
-    return total_len
 
 
 def tomorrow():
@@ -19,10 +10,6 @@ def tomorrow():
 
 def today():
     return date.today()
-
-
-def plus_days(date, days):
-    return date + timedelta(days)
 
 
 def minus_days(date, days):
@@ -43,8 +30,8 @@ def store_data(table_name, messages, lang):
 
 
 def store_test_data(messages, lang):
-    store_data('test_set', messages, lang)
+    store_data(constants.TEST_SET_DB_TABLE_NAME, messages, lang)
 
 
 def store_train_data(messages, lang):
-    store_data('train_set', messages, lang)
+    store_data(constants.TRAIN_SET_DB_TABLE_NAME, messages, lang)
