@@ -35,4 +35,4 @@ def load_train_data(amount, lang):
 
 
 def remove_redundant_symbols(messages):
-    return [re.sub(r'[http|@()]\S*', '', m) for m in messages]
+    return [re.sub(r'(http|@)\S*', '', m) for m in messages]

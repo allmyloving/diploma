@@ -1,6 +1,4 @@
 import requests
-from data import constants
-import sqlite3
 import lxml.html
 from lxml.etree import ElementTree
 
@@ -22,9 +20,6 @@ def get_dom_tree(page):
 
 def download_wiki(lang):
     tree = get_dom_tree(pages[lang])
-    conn = sqlite3.connect(constants.DB_NAME)
-    conn.cursor().execute('''CREATE TABLE IF NOT EXISTS train_set
-             (data text unique, lang text)''')
 
     messages = []
     for p in tree.findall('//p'):
