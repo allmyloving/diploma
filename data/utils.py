@@ -37,8 +37,16 @@ def store_train_data(messages, lang):
     store_data(constants.TRAIN_SET_DB_TABLE_NAME, messages, lang)
 
 
-def retrieve_train_data():
+def retrieve_data(table_name):
     conn = sqlite3.connect(constants.DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('select * from %s' % constants.TRAIN_SET_DB_TABLE_NAME)
+    cursor.execute('select * from %s' % table_name)
     return list(cursor)
+
+
+def retrieve_train_data():
+    return retrieve_data(constants.TRAIN_SET_DB_TABLE_NAME)
+
+
+def retrieve_test_data():
+    return retrieve_data(constants.TEST_SET_DB_TABLE_NAME)

@@ -18,6 +18,10 @@ def remove_redundant_symbols(messages):
     return [re.sub(r'(http|@)\S*', '', m) for m in messages]
 
 
+def remove_short_messages(messages):
+    return messages.fil
+
+
 def detect_language(message):
     pass
 
