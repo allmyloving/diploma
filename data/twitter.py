@@ -37,3 +37,23 @@ def search(token, q, lang, since='2017-01-01', until=utils.tomorrow(), count='10
 def transform(json):
     tweets = list(json.get('statuses'))
     return [t.get('text') for t in tweets], min([t.get('id') for t in tweets])
+
+
+def get_messages(lang, token, count, since, until, max_id):
+    status_code, json = search(token, 'a', lang, since, until, count, max_id=max_id)
+    if status_code != 200:
+        raise Exception("Twitter is unavailable")
+    return json
+
+
+def get_tweets(amount, lang, since='2017-01-01', until=utils.tomorrow()):
+    token = get_token()
+    all_messages = []
+    min_id = ''
+    count = amount if amount < 100 else 100
+
+    while len(all_messages) < amount:
+        json = get_messages(lang, token, count, since, until, min_id)
+        messages, min_id = transform(json)
+        all_messages.extend(messages)
+    return all_messages
