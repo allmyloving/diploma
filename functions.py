@@ -15,11 +15,7 @@ def load_train_data(amount, lang):
 
 
 def remove_redundant_symbols(messages):
-    return [re.sub(r'(http|@)\S*', '', m) for m in messages]
-
-
-def remove_short_messages(messages):
-    return messages.fil
+    return [re.sub(r'(http|@)\S*', '', m) for m in messages if len(m) > 20]
 
 
 def detect_language(message):
