@@ -37,16 +37,35 @@ def store_train_data(messages, lang):
     store_data(constants.TRAIN_SET_DB_TABLE_NAME, messages, lang)
 
 
-def retrieve_data(table_name):
+def get_all_languages(table_name):
     conn = sqlite3.connect(constants.DB_NAME)
     cursor = conn.cursor()
-    cursor.execute('select * from %s' % table_name)
+    cursor.execute('select DISTINCT lang from %s' % table_name)
+    return [x for y in list(cursor) for x in y]
+
+
+def retrieve_data_for_all_languages(table_name, amount_for_lang):
+    languages = get_all_languages(table_name)
+    total = []
+    for lang in languages:
+        data = retrieve_data(table_name, lang, amount_for_lang)
+        if len(data) < amount_for_lang:
+            raise Exception(
+                "Not enough data loaded. Required: %d, found: %d (lang %s)" % (amount_for_lang, len(data), lang))
+        total.extend(data)
+    return total
+
+
+def retrieve_data(table_name, lang, amount):
+    conn = sqlite3.connect(constants.DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('select * from %s where lang=? limit ?' % table_name, (str(lang), str(amount)))
     return list(cursor)
 
 
-def retrieve_train_data():
-    return retrieve_data(constants.TRAIN_SET_DB_TABLE_NAME)
+def retrieve_train_data(amount_for_lang):
+    return retrieve_data_for_all_languages(constants.TRAIN_SET_DB_TABLE_NAME, amount_for_lang)
 
 
-def retrieve_test_data():
-    return retrieve_data(constants.TEST_SET_DB_TABLE_NAME)
+def retrieve_test_data(amount_for_lang):
+    return retrieve_data_for_all_languages(constants.TEST_SET_DB_TABLE_NAME, amount_for_lang)
