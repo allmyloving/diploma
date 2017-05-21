@@ -2,6 +2,7 @@ import sqlite3
 from data import constants
 from datetime import date
 from datetime import timedelta
+import sys
 
 
 def tomorrow():
@@ -44,7 +45,7 @@ def get_all_languages(table_name):
     return [x for y in list(cursor) for x in y]
 
 
-def retrieve_data_for_all_languages(table_name, amount_for_lang):
+def retrieve_data_for_all_languages(table_name, amount_for_lang=sys.maxsize):
     languages = get_all_languages(table_name)
     total = []
     for lang in languages:
@@ -56,7 +57,7 @@ def retrieve_data_for_all_languages(table_name, amount_for_lang):
     return total
 
 
-def retrieve_data(table_name, lang, amount):
+def retrieve_data(table_name, lang, amount=sys.maxsize):
     conn = sqlite3.connect(constants.DB_NAME)
     cursor = conn.cursor()
     cursor.execute('select * from %s where lang=? limit ?' % table_name, (str(lang), str(amount)))
@@ -65,6 +66,10 @@ def retrieve_data(table_name, lang, amount):
 
 def retrieve_train_data(amount_for_lang):
     return retrieve_data_for_all_languages(constants.TRAIN_SET_DB_TABLE_NAME, amount_for_lang)
+
+
+def retrieve_train_data_by_language(lang):
+    return retrieve_data(constants.TRAIN_SET_DB_TABLE_NAME, lang)
 
 
 def retrieve_test_data(amount_for_lang):

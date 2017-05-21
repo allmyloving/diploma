@@ -1,6 +1,7 @@
 from data import twitter
 from data import utils
 import re
+from language_detection import language_detection
 
 
 def load_test_data(amount, lang):
@@ -18,9 +19,10 @@ def remove_redundant_symbols(messages):
     return [re.sub(r'(http|@)\S*', '', m) for m in messages if len(m) > 20]
 
 
-def detect_language(message):
-    pass
+def retrieve_train_data(lang):
+    return utils.retrieve_train_data_by_language(lang)
 
 
-
-
+def detect_language(train_data_amount, message):
+    language_detection.train('svm', train_data_amount)
+    return language_detection.predict(message)
