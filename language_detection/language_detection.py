@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import SVC
 
-from data import utils
+from data import db_utils
 
 CLASSIFIERS = {'naive_bayes': MultinomialNB(),
                'svm': SVC(),
@@ -19,7 +19,7 @@ clf = None
 def train(classifier, data_amount):
     global clf
     __validate_classifier_exists(classifier)
-    data = utils.retrieve_train_data(data_amount)
+    data = db_utils.retrieve_train_data(data_amount)
     messages = [line[0] for line in data]
     languages = [line[1] for line in data]
     clf = make_pipeline(vectorizer, transformer, CLASSIFIERS[classifier])
@@ -34,8 +34,8 @@ def predict(message):
 
 def train_and_evaluate(classifier, data_amount):
     __validate_classifier_exists(classifier)
-    train_set = utils.retrieve_train_data(data_amount)
-    test_set = utils.retrieve_test_data(data_amount)
+    train_set = db_utils.retrieve_train_data(data_amount)
+    test_set = db_utils.retrieve_test_data(data_amount)
     train_messages = [line[0] for line in train_set]
     train_languages = [line[1] for line in train_set]
     classifier = make_pipeline(vectorizer, transformer, CLASSIFIERS[classifier])
