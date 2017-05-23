@@ -72,5 +72,9 @@ def retrieve_train_data_by_language(lang):
     return retrieve_data(constants.TRAIN_SET_DB_TABLE_NAME, lang)
 
 
+def retrieve_test_data_by_language(lang):
+    return retrieve_data(constants.TEST_SET_DB_TABLE_NAME, lang)
+
+
 def retrieve_test_data(amount_for_lang):
     return retrieve_data_for_all_languages(constants.TEST_SET_DB_TABLE_NAME, amount_for_lang)

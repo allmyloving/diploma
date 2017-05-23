@@ -23,6 +23,10 @@ def retrieve_train_data(lang):
     return utils.retrieve_train_data_by_language(lang)
 
 
+def retrieve_test_data(lang):
+    return utils.retrieve_test_data_by_language(lang)
+
+
 def detect_language(message, train_data_amount=50):
     language_detection.train('svm', train_data_amount)
     return language_detection.predict(message)
