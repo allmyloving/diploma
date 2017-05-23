@@ -13,8 +13,8 @@ class TestLanguageDetection(unittest.TestCase):
             language_detection.predict(200)
 
     def test_should_not_throw_exception_if_classifier_is_trained(self):
-        functions.load_train_data(50, 'en')
-        functions.load_train_data(50, 'ru')
+        functions.load_train_data('en', 50)
+        functions.load_train_data('ru', 50)
         language_detection.train('svm', 10)
         language_detection.predict('message')
 
