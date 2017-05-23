@@ -4,6 +4,11 @@ from language_detection import language_detection
 
 
 class TestLanguageDetection(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        functions.load_train_data('en', 50)
+        functions.load_train_data('ru', 50)
+
     def test_should_throw_exception_if_classifier_not_found(self):
         with self.assertRaises(Exception):
             language_detection.train('not_existing_classifier', 200)
@@ -13,10 +18,9 @@ class TestLanguageDetection(unittest.TestCase):
             language_detection.predict(200)
 
     def test_should_not_throw_exception_if_classifier_is_trained(self):
-        functions.load_train_data('en', 50)
-        functions.load_train_data('ru', 50)
-        language_detection.train('svm', 10)
-        language_detection.predict('message')
+        language_detection.train('svm', 20)
+        self.assertEqual(language_detection.predict('message'), 'en')
+        self.assertEqual(language_detection.predict('сообщение'), 'ru')
 
 
 if __name__ == '__main__':
