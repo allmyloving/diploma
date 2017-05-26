@@ -1,6 +1,7 @@
 import requests
 from data import constants
 from data import db_utils
+from data.date_utils import *
 
 
 def __get_token():
@@ -15,7 +16,7 @@ def __get_token():
         return response.json().get('access_token')
 
 
-def __search(token, q, lang, since='2017-01-01', until=db_utils.tomorrow(), count='100', max_id=''):
+def __search(token, q, lang, since='2017-01-01', until=tomorrow(), count='100', max_id=''):
     search_params = {
         'q': q,
         'lang': lang,
@@ -46,14 +47,19 @@ def __get_messages(lang, token, count, since, until, max_id):
     return json
 
 
-def get_tweets(amount, lang, since='2017-01-01', until=db_utils.tomorrow()):
+def get_tweets(amount, lang, since='2017-01-01', until=tomorrow()):
     token = __get_token()
     all_messages = []
     min_id = ''
-    count = amount if amount < 100 else 100
 
     while len(all_messages) < amount:
-        json = __get_messages(lang, token, count, since, until, min_id)
+        json = __get_messages(lang, token, amount, since, until, min_id)
         messages, min_id = __transform(json)
         all_messages.extend(messages)
-    return all_messages
+        all_messages = list(set(all_messages))
+    return all_messages[:amount]
+
+
+if __name__ == '__main__':
+    print(len(get_tweets(200, 'en', since=minus_days(today(), 3))))
+    print(len(get_tweets(200, 'en', until=minus_days(today(), 3))))

@@ -8,6 +8,6 @@ CLIENT_CREDENTIALS = 'client_credentials'
 CONSUMER_KEY = 'I7IzOl39eH1KqXaUGzw1TlfeU'
 CONSUMER_SECRET = 'e1I2lEbyDVnpJe8JOawYx78DIh9WdhU6SeFHtMVvYbjKH8AA62'
 
-DB_NAME = 'diploma.db'
+DB_NAME = r'C:\db\diploma.db'
 TRAIN_SET_DB_TABLE_NAME = 'train_set'
 TEST_SET_DB_TABLE_NAME = 'test_set'
