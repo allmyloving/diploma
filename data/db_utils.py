@@ -9,8 +9,10 @@ def __store_data(table_name, messages, lang):
     cursor.execute('''CREATE TABLE IF NOT EXISTS %s
                  (data text unique, lang text)''' % table_name)
     for message in messages:
-        cursor.execute("insert into %s values (?, ?)" % table_name, (message, lang))
-    conn.commit()
+        cursor.execute("select * from %s where data=?" % table_name, (message,))
+        if not cursor.fetchone():
+            cursor.execute("insert into %s values (?, ?)" % table_name, (message, lang))
+        conn.commit()
     cursor.close()
     conn.close()
 
