@@ -36,6 +36,6 @@ def cleanup_all_data():
     db_utils.cleanup()
 
 
-def detect_language(message, train_data_amount=50):
-    language_detection.train('svm', train_data_amount)
+def detect_language(message, classifier='naive_bayes', train_data_amount=50):
+    language_detection.train(classifier, train_data_amount)
     return language_detection.predict(message)

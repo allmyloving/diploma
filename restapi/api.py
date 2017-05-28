@@ -3,8 +3,6 @@ import functions
 
 app = Flask(__name__)
 
-from flask import make_response
-
 
 @app.errorhandler(404)
 def not_found(error):
@@ -47,6 +45,16 @@ def create_test_data(lang):
 def clear_all_data():
     functions.cleanup_all_data()
     return jsonify(), 204
+
+
+@app.route('/lang/detect', methods=['POST'])
+def detect_language():
+    validate_request_has('text')
+    if 'classifier' in request.json:
+        result = functions.detect_language(request.json['text'], classifier=request.json['classifier'])
+    else:
+        result = functions.detect_language(request.json['text'])
+    return jsonify(result), 200
 
 
 def error_response(message, status):
