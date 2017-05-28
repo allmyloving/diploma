@@ -7,11 +7,11 @@ from sklearn.svm import SVC
 
 from data import db_utils
 
-CLASSIFIERS = {'naive_bayes': MultinomialNB(),
-               'svm': SVC(),
-               'knn': KNeighborsClassifier()}
+CLASSIFIERS = {'naive_bayes': MultinomialNB(alpha=0.02),
+               'svm': SVC(kernel='linear'),
+               'knn': KNeighborsClassifier(n_jobs=-1)}
 
-vectorizer = CountVectorizer(analyzer='char', ngram_range=(1, 3))
+vectorizer = CountVectorizer(analyzer='char', ngram_range=(1, 3), decode_error='ignore')
 transformer = TfidfTransformer(use_idf=False)
 clf = None
 
