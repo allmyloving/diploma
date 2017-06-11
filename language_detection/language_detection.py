@@ -11,7 +11,9 @@ CLASSIFIERS = {'naive_bayes': MultinomialNB(alpha=0.02),
                'svm': SVC(kernel='linear'),
                'knn': KNeighborsClassifier(n_jobs=-1)}
 
-vectorizer = CountVectorizer(analyzer='char', ngram_range=(1, 3), decode_error='ignore')
+vectorizer = CountVectorizer(analyzer='char',
+                             ngram_range=(1, 3),
+                             decode_error='ignore')
 transformer = TfidfTransformer(use_idf=False)
 clf = None
 
