@@ -1,10 +1,10 @@
 from flask import *
 import functions
+import connexion
 
-app = Flask(__name__)
+app = connexion.App(__name__, specification_dir='swagger/')
 
 
-@app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
@@ -19,7 +19,8 @@ def create_train_data(lang):
     validate_request_has('amount')
     validate_is_number('amount')
     try:
-        functions.load_train_data(lang, int(request.json['amount']))
+        functions.load_train_data(lang,
+                                  int(request.json['amount']))
     except Exception as e:
         return error_response(str(e), 500)
     return '', 201
@@ -51,7 +52,8 @@ def clear_all_data():
 def detect_language():
     validate_request_has('text')
     if 'classifier' in request.json:
-        result = functions.detect_language(request.json['text'], classifier=request.json['classifier'])
+        result = functions.detect_language(request.json['text'],
+                                           classifier=request.json['classifier'])
     else:
         result = functions.detect_language(request.json['text'])
     return jsonify(result), 200
@@ -72,5 +74,8 @@ def validate_is_number(param):
         abort(error_response('%s should be positive integer' % param, 400))
 
 
+# Swagger is under localhost:5000/ui
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.add_error_handler(404, not_found)
+    app.add_api('specification.yaml')
+    app.run(port=5000, debug=True)

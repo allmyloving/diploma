@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Lang Detect API"
+host: "localhost:8080"
+basePath: "/"
+schemes:
+- "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+paths:
+  '/data/train/{lang}':
+    get:
+      tags:
+      - "data"
+      summary: "Retrieve train data"
+      description: "Retrieve train data from database by language"
+      operationId: api.get_train_data
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: lang
+        in: path
+        description: "Language for messages which to return"
+        required: true
+        type: string
+      responses:
+        200:
+          description: "Messages are returned"
+          schema:
+            $ref: "#/definitions/RetrieveDataResponse"
+        500:
+          description: "Internal server error"
+    post:
+      tags:
+      - "data"
+      summary: "Load train data"
+      description: "Loads data to database by amount and language"
+      operationId: api.create_train_data
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: lang
+          in: path
+          description: "Language of which messages should be written"
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: "Amount of messages to be loaded"
+          required: true
+          schema:
+            $ref: "#/definitions/LoadDataRequest"
+      responses:
+        201:
+          description: "Successful response"
+        400:
+          description: "Client error, request data missing"
+        500:
+          description: "Internal server error"
+  /data/test/{lang}:
+    get:
+      tags:
+      - "data"
+      summary: "Retrieve test data"
+      description: "Retrieve test database by languages"
+      operationId: api.get_test_data
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: lang
+        description: "Language for messages which to return"
+        required: true
+        type: string
+      responses:
+        200:
+          description: "Messages from test table are returned"
+          schema:
+            $ref: "#/definitions/RetrieveDataResponse"
+        500:
+          description: "Internal server error"
+    post:
+      tags:
+      - "data"
+      summary: "Load test data"
+      description: "Loads test data to database by amount and language"
+      operationId: api.create_test_data
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - name: lang
+          in: "path"
+          description: "Language of which messages should be written"
+          required: true
+          type: string
+        - in: "body"
+          name: "amount"
+          description: "Amount of messages to be loaded"
+          required: true
+          schema:
+            $ref: "#/definitions/LoadDataRequest"
+      responses:
+        201:
+          description: "Successful response"
+        400:
+          description: "Client error, request data missing"
+        500:
+          description: "Internal server error"
+  /data:
+    delete:
+      tags:
+      - "data"
+      summary: "Delete all data"
+      description: "Clears both train and test data for all languages"
+      operationId: api.clear_all_data
+      produces:
+      - "application/json"
+      responses:
+        204:
+          description: "Deletion successful, no content returned"
+        500:
+          description: "Internal server error"
+  /lang/detect:
+    post:
+      tags:
+      - "lang"
+      summary: "Detect language of the text"
+      description: "Detect language of the text, train data should be already loaded"
+      operationId: api.detect_language
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Message and classifier"
+          required: true
+          schema:
+            $ref: "#/definitions/DetectLangRequest"
+      responses:
+        200:
+          description: "Language identified successfully, predicted result is returned"
+        400:
+          description: "Required parameters missing"
+        500:
+          description: "Internal server error"
+definitions:
+  RetrieveDataResponse:
+    type: "array"
+    items:
+      type: string
+  DetectLangRequest:
+    type: "object"
+    properties:
+      text:
+        type: "string"
+      classifier:
+        type: "string"
+        enum:
+          - svm
+          - knn
+          - naive_bayes
+        description: classifier to be used for prediction
+  LoadDataRequest:
+    type: "object"
+    properties:
+      amount:
+        type: "string"
+        format: "integer"
