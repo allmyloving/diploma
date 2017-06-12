@@ -16,12 +16,7 @@ def load_train_data(lang, amount):
     if len(retrieve_train_data(lang)) > 0:
         raise Exception('Please load all data in one call')
     messages = twitter.get_tweets(amount, lang, until=minus_days(today(), 3))
-    messages = remove_redundant_symbols(messages)
     db_utils.store_train_data(messages, lang)
-
-
-def remove_redundant_symbols(messages):
-    return [re.sub(r'(http|@)\S*', '', m) for m in messages if len(m) > 20]
 
 
 def retrieve_train_data(lang):

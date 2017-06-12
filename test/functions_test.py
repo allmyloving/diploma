@@ -1,5 +1,6 @@
 import unittest
 from functions import *
+from data.twitter import *
 
 
 class TestFunctions(unittest.TestCase):

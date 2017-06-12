@@ -1,7 +1,7 @@
 import requests
 from data import constants
-from data import db_utils
 from data.date_utils import *
+import re
 
 
 def __get_token():
@@ -55,9 +55,14 @@ def get_tweets(amount, lang, since='2017-01-01', until=tomorrow()):
     while len(all_messages) < amount:
         json = __get_messages(lang, token, amount, since, until, min_id)
         messages, min_id = __transform(json)
+        messages = remove_redundant_symbols(messages)
         all_messages.extend(messages)
         all_messages = list(set(all_messages))
     return all_messages[:amount]
+
+
+def remove_redundant_symbols(messages):
+    return [re.sub(r'(http|@)\S*', '', m) for m in messages if len(m) > 20]
 
 
 if __name__ == '__main__':
