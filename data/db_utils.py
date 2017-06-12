@@ -1,6 +1,7 @@
 import sqlite3
-from data import constants
 import sys
+
+from data import constants
 
 
 def __store_data(table_name, messages, lang):

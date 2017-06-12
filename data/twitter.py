@@ -1,7 +1,9 @@
+import re
+
 import requests
+
 from data import constants
 from data.date_utils import *
-import re
 
 
 def __get_token():
