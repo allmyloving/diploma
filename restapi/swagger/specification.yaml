@@ -3,7 +3,7 @@ info:
   description: ""
   version: "1.0.0"
   title: "Lang Detect API"
-host: "localhost:8080"
+host: "localhost:5000"
 basePath: "/"
 schemes:
 - "http"

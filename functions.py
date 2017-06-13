@@ -1,7 +1,6 @@
-from data import twitter
 from data import db_utils
+from data import twitter
 from data.date_utils import *
-import re
 from language_detection import language_detection
 
 
